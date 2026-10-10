@@ -15,13 +15,20 @@
       if (saved === 'light' || saved === 'dark') initialTheme = saved;
     } catch (_) {}
     document.documentElement.dataset.theme = initialTheme;
+    try { if (localStorage.getItem('nexora-sidebar-collapsed') === '1') document.documentElement.classList.add('nx-rail'); } catch (_) {}
     document.querySelector('meta[name="theme-color"]').content = initialTheme === 'dark' ? '#020608' : '#f5fafb';
   </script>
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./module3.css">
   <script src="./vendor/jspdf.umd.min.js" defer></script>
   <script src="./pdf.js" defer></script>
   <script src="./vault-files.js" defer></script>
   <script src="./app.js" defer></script>
+  <script src="./sidebar-toggle.js" defer></script>
+  <script src="./nexora-core.js" defer></script>
+  <script src="./flashloop.js" defer></script>
+  <script src="./focus.js" defer></script>
+  <script src="./analytics.js" defer></script>
   <script src="./avatar.js" defer></script>
   <script src="./pattern.js" defer></script>
 </head>

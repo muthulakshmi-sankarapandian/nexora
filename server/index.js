@@ -10,6 +10,7 @@ import { analyzeTopics } from './pattern-topics.js';
 import { extractQuestionsWithAi } from './pattern-ai-extract.js';
 import { moderateNickname } from './nickname-moderation.js';
 import { chatStudyAssistant } from './study-chat.js';
+import { handleGenerate } from './flashloop.mjs';
 
 try { process.loadEnvFile(fileURLToPath(new URL('./.env', import.meta.url))); } catch (_) {}
 
@@ -129,6 +130,7 @@ async function assistantChat(request,response) {
 http.createServer(async (request, response) => {
   const url = new URL(request.url, `http://${host}:${port}`);
   if (url.pathname === '/api/summarize' && request.method === 'POST') return summarize(request, response);
+  if (url.pathname === '/api/flashloop/generate') return handleGenerate(request, response);
   if (url.pathname === '/api/pattern/extract' && request.method === 'POST') return extractPatternPaper(request, response, url);
   if (url.pathname === '/api/pattern/analyze' && request.method === 'POST') return analyzePattern(request, response);
   if (url.pathname === '/api/pattern/topics' && request.method === 'POST') return topicImportance(request,response);

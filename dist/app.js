@@ -201,8 +201,9 @@ function navigate() {
   const title = id === 'overview' ? 'Overview' : module?.name || (id === 'settings' ? 'Settings' : 'Overview');
   const actual = id === 'overview' || module || id === 'settings' ? id : 'overview';
   $('#nx-overview').hidden = actual !== 'overview';
-  $('#nx-module').hidden = actual === 'overview' || actual === 'settings' || actual === 'summarizer' || actual === 'vault' || actual === 'pattern' || actual === 'assistant';
-  $('#nx-summarizer').hidden = actual !== 'summarizer';
+  const custom = window.NexoraPages || {};
+  $('#nx-module').hidden = actual === 'overview' || actual === 'settings' || actual === 'summarizer' || actual === 'vault' || actual === 'pattern' || actual === 'assistant' || actual in custom;
+  Object.entries(custom).forEach(([pid, p]) => { p.el.hidden = actual !== pid; if (actual === pid && p.onShow) p.onShow(); });  $('#nx-summarizer').hidden = actual !== 'summarizer';
   $('#nx-vault-notes').hidden = actual !== 'vault';
   $('#nx-pattern').hidden = actual !== 'pattern';
   $('#nx-assistant').hidden = actual !== 'assistant';
@@ -249,37 +250,8 @@ function renderTasks() {
   $('#nx-metric-tasks').textContent = String(checks.length - completed);
 }
 renderTasks();
-let remaining = 25 * 60, timer = null;
-function renderClock() {
-  $('#nx-clock').textContent = `${String(Math.floor(remaining / 60)).padStart(2,'0')}:${String(remaining % 60).padStart(2,'0')}`;
-}
-$('#nx-focus-start').addEventListener('click', () => {
-  const button = $('#nx-focus-start');
-  if (timer) {
-    clearInterval(timer); timer = null;
-    button.innerHTML = `${icon('play')}<span>Resume session</span>`;
-    toast('Focus session paused.');
-  } else {
-    button.innerHTML = `${icon('pause')}<span>Pause session</span>`;
-    $('#nx-focus-reset').hidden = false;
-    timer = setInterval(() => {
-      remaining--;
-      renderClock();
-      if (remaining <= 0) {
-        clearInterval(timer); timer = null; remaining = 25 * 60;
-        button.innerHTML = `${icon('play')}<span>Start session</span>`;
-        renderClock();
-        toast('Focus session complete. Nice work.');
-      }
-    }, 1000);
-  }
-});
-$('#nx-focus-reset').addEventListener('click', () => {
-  clearInterval(timer); timer = null; remaining = 25 * 60;
-  $('#nx-focus-start').innerHTML = `${icon('play')}<span>Start session</span>`;
-  $('#nx-focus-reset').hidden = true; renderClock();
-});
-renderClock();
+$('#nx-focus-start').addEventListener('click', () => { location.hash = '#focus'; });
+
 
 const captionForm = $('#nx-caption-form');
 let currentNote = null;

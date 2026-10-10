@@ -1,5 +1,3 @@
-/server/.env
 node_modules/
-.npm-cache/
-output/
-tmp/
+.env
+.DS_Store
